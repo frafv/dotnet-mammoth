@@ -41,14 +41,6 @@ The following features are currently supported:
 
 * Comments.
 
-## Installation
-
-Available on [NuGet](https://www.nuget.org/packages/Mammoth/).
-
-```
-Install-Package Mammoth
-```
-
 ## Other supported platforms
 
 * [JavaScript](https://github.com/mwilliamson/mammoth.js), both the browser and node.js.
@@ -141,15 +133,14 @@ For instance, the following would replicate the default behaviour:
 ```csharp
 var converter = new DocumentConverter()
     .ImageConverter(image => {
-        using (var stream = image.GetStream()) {
-            var base64 = StreamToBase64(stream);
-            var src = "data:" + image.ContentType + ";base64," + base64;
-            return new Dictionary<string, string> { { "src", src } };
+        using (var stream = image.Open()) {
+            byte[] data = new BinaryReader(stream).ReadBytes((int)stream.Length);
+            string base64 = Convert.ToBase64String(data);
+            string src = $"data:{image.ContentType};base64,{base64}";
+            return new Dictionary<string, string> { ["src"] = src };
         }
     });
 ```
-
-where `StreamToBase64` is a function that reads a stream and encodes it as a Base64 string.
 
 #### Bold
 
@@ -260,7 +251,7 @@ Represents the result of a conversion. Properties:
 
 * `T Value`: the generated text.
 
-* `ISet<string> Warnings`: any warnings generated during the conversion.
+* `string[] Warnings`: any warnings generated during the conversion.
 
 #### Image converters
 
@@ -269,11 +260,11 @@ This creates an `<img>` element for each image in the original docx.
 The argument is the image element being converted,
 and has the following members:
 
-* `Stream GetStream()`: open the image file.
+* `Stream Open()`: open the image file.
 
-* `String ContentType`: the content type of the image, such as `image/png`.
+* `string ContentType`: the content type of the image, such as `image/png`.
 
-* `String AltText`: the alt text of the image, if any.
+* `string AltText`: the alt text of the image, if any.
 
 The function should return an `IDictionary` of attributes for the `<img>` element.
 At a minimum, this should include the `src` attribute.
@@ -285,15 +276,14 @@ For instance, the following would replicate the default behaviour:
 ```csharp
 var converter = new DocumentConverter()
     .ImageConverter(image => {
-        using (var stream = image.GetStream()) {
-            var base64 = StreamToBase64(stream);
-            var src = "data:" + image.ContentType + ";base64," + base64;
-            return new Dictionary<string, string> { { "src", src } };
+        using (var stream = image.Open()) {
+            byte[] data = new BinaryReader(stream).ReadBytes((int)stream.Length);
+            string base64 = Convert.ToBase64String(data);
+            string src = $"data:{image.ContentType};base64,{base64}";
+            return new Dictionary<string, string> { ["src"] = src };
         }
     });
 ```
-
-where `StreamToBase64` is a function that reads a stream and encodes it as a Base64 string.
 
 ## Writing style maps
 
