@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -7,7 +7,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Mammoth</RootNamespace>
     <AssemblyName>Mammoth</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,85 +35,116 @@
     <Reference Include="System.IO.Compression.FileSystem" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Internal\Conversion\InternalImageConverter.cs" />
+    <Compile Include="Internal\Conversion\RawText.cs" />
+    <Compile Include="Internal\Docx\CommentXmlReader.cs" />
+    <Compile Include="Internal\Docx\ContentTypes.cs" />
+    <Compile Include="Internal\Docx\ContentTypesXml.cs" />
+    <Compile Include="Internal\Documents\NumberingStyle.cs" />
+    <Compile Include="Internal\Docx\Dingbats.cs" />
+    <Compile Include="Internal\Html\HtmlAttributes.cs" />
+    <Compile Include="Internal\Styles\BreakMatcher.cs" />
+    <Compile Include="Internal\Docx\BodyXmlReader.cs" />
+    <Compile Include="Internal\Documents\Bookmark.cs" />
+    <Compile Include="Internal\Documents\Break.cs" />
+    <Compile Include="Internal\Documents\Comment.cs" />
+    <Compile Include="Internal\Documents\CommentReference.cs" />
+    <Compile Include="Internal\Styles\Parsing\DocumentMatcherParser.cs" />
+    <Compile Include="Internal\Styles\StringMatcher.cs" />
+    <Compile Include="Internal\Xml\XmlAttributes.cs" />
+    <Compile Include="Internal\Xml\NamespacePrefix.cs" />
+    <Compile Include="Internal\Xml\NamespacePrefixes.cs" />
+    <Compile Include="Internal\Xml\XmlWriter.cs" />
+    <Compile Include="Internal\Xml\Parsing\ElementName.cs" />
+    <Compile Include="IResult.cs" />
+    <Compile Include="IImage.cs" />
+    <Compile Include="Images\ImageConverter.cs" />
+    <Compile Include="Internal\Html\HtmlNode.cs" />
+    <Compile Include="Internal\Html\HtmlTag.cs" />
+    <Compile Include="Internal\Html\HtmlElement.cs" />
+    <Compile Include="Internal\Html\HtmlForceWrite.cs" />
+    <Compile Include="Internal\Html\HtmlTextNode.cs" />
+    <Compile Include="Internal\Html\Html.cs" />
+    <Compile Include="Internal\Html\HtmlWriter.cs" />
+    <Compile Include="Internal\Xml\NullXmlElement.cs" />
+    <Compile Include="Internal\Xml\Parsing\ISimpleSaxHandler.cs" />
+    <Compile Include="Internal\Documents\Document.cs" />
+    <Compile Include="Internal\Documents\DocumentElement.cs" />
+    <Compile Include="Internal\Documents\Hyperlink.cs" />
+    <Compile Include="Internal\Documents\IHasChildren.cs" />
+    <Compile Include="Internal\Documents\Image.cs" />
+    <Compile Include="Internal\Documents\Note.cs" />
+    <Compile Include="Internal\Documents\NoteReference.cs" />
+    <Compile Include="Internal\Documents\Notes.cs" />
+    <Compile Include="Internal\Documents\NumberingLevel.cs" />
+    <Compile Include="Internal\Documents\Paragraph.cs" />
+    <Compile Include="Internal\Documents\ParagraphIndent.cs" />
+    <Compile Include="Internal\Styles\EqualToStringMatcher.cs" />
+    <Compile Include="Internal\Styles\HtmlPathElement.cs" />
+    <Compile Include="Internal\Styles\HtmlPathElements.cs" />
+    <Compile Include="Internal\Styles\Ignore.cs" />
+    <Compile Include="Internal\Styles\ParagraphMatcher.cs" />
+    <Compile Include="Internal\Styles\DefaultStyles.cs" />
+    <Compile Include="Internal\Styles\DocumentElementMatcher.cs" />
+    <Compile Include="Internal\Styles\DocumentElementMatching.cs" />
+    <Compile Include="Internal\Styles\HtmlPath.cs" />
+    <Compile Include="Internal\Styles\Parsing\EscapeSequences.cs" />
+    <Compile Include="Internal\Styles\Parsing\HtmlPathParser.cs" />
+    <Compile Include="Internal\Docx\DocumentReader.cs" />
+    <Compile Include="Internal\Docx\DocumentXmlReader.cs" />
+    <Compile Include="Internal\Docx\EmbeddedStyleMap.cs" />
+    <Compile Include="Internal\Docx\NotesXmlReader.cs" />
+    <Compile Include="Internal\Docx\Numbering.cs" />
+    <Compile Include="Internal\Docx\NumberingXml.cs" />
+    <Compile Include="Internal\Docx\OfficeXml.cs" />
+    <Compile Include="Internal\Docx\PathRelativeFileReader.cs" />
+    <Compile Include="Internal\Docx\IFileReader.cs" />
+    <Compile Include="Internal\Results\InternalResult.cs" />
+    <Compile Include="Internal\Conversion\DocumentToHtml.cs" />
+    <Compile Include="Internal\Conversion\DocumentToHtmlOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DocumentConverter.cs" />
-    <Compile Include="IImage.cs" />
-    <Compile Include="IResult.cs" />
-    <Compile Include="SimpleResult.cs" />
-    <Compile Include="generated.cs" />
-    <Compile Include="Couscous\Adapters.cs" />
-    <Compile Include="Couscous\HorribleHacks.cs" />
-    <Compile Include="Couscous\IterableExtensions.cs" />
-    <Compile Include="Couscous\JavaStringExtensions.cs" />
-    <Compile Include="Couscous\java\io\File.cs" />
-    <Compile Include="Couscous\java\io\InputStream.cs" />
-    <Compile Include="Couscous\java\io\IOException.cs" />
-    <Compile Include="Couscous\java\io\Closeable.cs" />
-    <Compile Include="Couscous\java\nio\file\Path.cs" />
-    <Compile Include="Couscous\java\lang\IllegalArgumentException.cs" />
-    <Compile Include="Couscous\java\lang\IndexOutOfBoundsException.cs" />
-    <Compile Include="Couscous\java\lang\Iterable.cs" />
-    <Compile Include="Couscous\java\lang\RuntimeException.cs" />
-    <Compile Include="Couscous\java\lang\String.cs" />
-    <Compile Include="Couscous\java\lang\StringBuilder.cs" />
-    <Compile Include="Couscous\java\lang\UnsupportedOperationException.cs" />
-    <Compile Include="Couscous\java\math\BigInteger.cs" />
-    <Compile Include="Couscous\java\net\URI.cs" />
-    <Compile Include="Couscous\java\net\URISyntaxException.cs" />
-    <Compile Include="Couscous\java\net\URL.cs" />
-    <Compile Include="Couscous\java\util\function\BiConsumer.cs" />
-    <Compile Include="Couscous\java\util\function\BiFunction.cs" />
-    <Compile Include="Couscous\java\util\function\BiPredicate.cs" />
-    <Compile Include="Couscous\java\util\function\Consumer.cs" />
-    <Compile Include="Couscous\java\util\function\Function.cs" />
-    <Compile Include="Couscous\java\util\function\IntFunction.cs" />
-    <Compile Include="Couscous\java\util\function\Predicate.cs" />
-    <Compile Include="Couscous\java\util\function\Supplier.cs" />
-    <Compile Include="Couscous\java\util\regex\Matcher.cs" />
-    <Compile Include="Couscous\java\util\regex\Pattern.cs" />
-    <Compile Include="Couscous\java\util\AbstractMap.cs" />
-    <Compile Include="Couscous\java\util\ArrayDeque.cs" />
-    <Compile Include="Couscous\java\util\ArrayList.cs" />
-    <Compile Include="Couscous\java\util\Arrays.cs" />
-    <Compile Include="Couscous\java\util\Collection.cs" />
-    <Compile Include="Couscous\java\util\Deque.cs" />
-    <Compile Include="Couscous\java\util\HashMap.cs" />
-    <Compile Include="Couscous\java\util\HashSet.cs" />
-    <Compile Include="Couscous\java\util\Iterator.cs" />
-    <Compile Include="Couscous\java\util\List.cs" />
-    <Compile Include="Couscous\java\util\Map.cs" />
-    <Compile Include="Couscous\java\util\NoSuchElementException.cs" />
-    <Compile Include="Couscous\java\util\Objects.cs" />
-    <Compile Include="Couscous\java\util\Optional.cs" />
-    <Compile Include="Couscous\java\util\OptionalInt.cs" />
-    <Compile Include="Couscous\java\util\Queue.cs" />
-    <Compile Include="Couscous\java\util\Set.cs" />
-    <Compile Include="Couscous\mammoth\internal\archives\InMemoryArchive.cs" />
-    <Compile Include="Couscous\mammoth\internal\archives\ZippedArchive.cs" />
-    <Compile Include="Couscous\mammoth\internal\styles\parsing\LineParseException.cs" />
-    <Compile Include="Couscous\mammoth\internal\styles\parsing\ParseException.cs" />
-    <Compile Include="Couscous\mammoth\internal\util\Base64Encoding.cs" />
-    <Compile Include="Couscous\mammoth\internal\util\Casts.cs" />
-    <Compile Include="Couscous\mammoth\internal\util\Lists.cs" />
-    <Compile Include="Couscous\mammoth\internal\util\Maps.cs" />
-    <Compile Include="Couscous\mammoth\internal\util\Paths.cs" />
-    <Compile Include="Couscous\mammoth\internal\util\PassThroughException.cs" />
-    <Compile Include="Couscous\mammoth\internal\util\Queues.cs" />
-    <Compile Include="Couscous\mammoth\internal\util\Sets.cs" />
-    <Compile Include="Couscous\mammoth\internal\util\Streams.cs" />
-    <Compile Include="Couscous\mammoth\internal\util\Strings.cs" />
-    <Compile Include="Couscous\mammoth\internal\util\Iterables.cs" />
-    <Compile Include="Couscous\mammoth\internal\xml\XmlWriter.cs" />
-    <Compile Include="Couscous\mammoth\internal\xml\parsing\SimpleSax.cs" />
+    <Compile Include="Internal\Documents\Run.cs" />
+    <Compile Include="Internal\Styles\RunMatcher.cs" />
+    <Compile Include="Internal\Styles\Parsing\RegexTokeniser.cs" />
+    <Compile Include="Internal\Docx\ReadResult.cs" />
+    <Compile Include="Internal\Docx\Relationship.cs" />
+    <Compile Include="Internal\Docx\Relationships.cs" />
+    <Compile Include="Internal\Docx\RelationshipsXml.cs" />
+    <Compile Include="Internal\InternalDocumentConverter.cs" />
+    <Compile Include="Internal\Styles\Parsing\LineParseException.cs" />
+    <Compile Include="Internal\Styles\Parsing\ParseException.cs" />
+    <Compile Include="Internal\Xml\Parsing\SimpleSax.cs" />
+    <Compile Include="Internal\Docx\Uris.cs" />
+    <Compile Include="Internal\Xml\XmlElement.cs" />
+    <Compile Include="Internal\Xml\IXmlElementLike.cs" />
+    <Compile Include="Internal\Xml\XmlElementList.cs" />
+    <Compile Include="Internal\Xml\XmlNode.cs" />
+    <Compile Include="Internal\Xml\XmlNodes.cs" />
+    <Compile Include="Internal\Xml\XmlTextNode.cs" />
+    <Compile Include="Internal\Xml\Parsing\XmlElementBuilder.cs" />
+    <Compile Include="Internal\Xml\Parsing\XmlParser.cs" />
+    <Compile Include="Internal\Archives\ZipPaths.cs" />
+    <Compile Include="Internal\Documents\Style.cs" />
+    <Compile Include="Internal\Documents\Tab.cs" />
+    <Compile Include="Internal\Documents\Table.cs" />
+    <Compile Include="Internal\Documents\TableCell.cs" />
+    <Compile Include="Internal\Documents\TableRow.cs" />
+    <Compile Include="Internal\Documents\Text.cs" />
+    <Compile Include="Internal\Styles\StartsWithStringMatcher.cs" />
+    <Compile Include="Internal\Styles\StyleMap.cs" />
+    <Compile Include="Internal\Styles\StyleMapBuilder.cs" />
+    <Compile Include="Internal\Styles\StyleMapping.cs" />
+    <Compile Include="Internal\Styles\TableMatcher.cs" />
+    <Compile Include="Internal\Styles\Parsing\StyleMapParser.cs" />
+    <Compile Include="Internal\Styles\Parsing\StyleMappingTokeniser.cs" />
+    <Compile Include="Internal\Styles\Parsing\Token.cs" />
+    <Compile Include="Internal\Styles\Parsing\TokenParser.cs" />
+    <Compile Include="Internal\Styles\Parsing\TokenIterator.cs" />
+    <Compile Include="Internal\Docx\StatefulBodyXmlReader.cs" />
+    <Compile Include="Internal\Docx\Styles.cs" />
+    <Compile Include="Internal\Docx\StylesXml.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Couscous\" />
-    <Folder Include="Couscous\java\" />
-    <Folder Include="Couscous\mammoth\" />
-    <Folder Include="Couscous\mammoth\internal\" />
-    <Folder Include="Couscous\mammoth\internal\util\" />
-    <Folder Include="Couscous\java\nio\" />
-    <Folder Include="Couscous\java\nio\file\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

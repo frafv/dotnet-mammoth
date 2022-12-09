@@ -108,7 +108,7 @@ namespace Mammoth.Tests {
         }
         
         private IDictionary<string, string> ConvertImage(IImage image) {
-            using (var stream = image.GetStream()) {
+            using (var stream = image.Open()) {
                 var base64 = StreamToBase64(stream);
                 var src = base64.Substring(0, 2) + "," + image.ContentType;
                 return new Dictionary<string, string> { { "src", src } };
@@ -254,7 +254,7 @@ namespace Mammoth.Tests {
         }
 
         private void AssertSuccessfulConversion(IResult<string> result, string expectedValue) {
-            if (result.Warnings.Count > 0) {
+            if (result.Warnings.Length > 0) {
                 throw new XunitException("Unexpected warnings: " + string.Join(", ", result.Warnings));
             }
             Assert.Equal(expectedValue, result.Value);

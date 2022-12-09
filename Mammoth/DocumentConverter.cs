@@ -1,91 +1,148 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Mammoth.Couscous;
-using Mammoth.Couscous.org.zwobble.mammoth.@internal;
-using Mammoth.Couscous.org.zwobble.mammoth.@internal.conversion;
+using Mammoth.Internal;
+using Mammoth.Internal.Conversion;
 
-namespace Mammoth {
-    public class DocumentConverter {
-        private readonly DocumentToHtmlOptions options;
+namespace Mammoth
+{
+	public class DocumentConverter
+	{
+		private readonly DocumentToHtmlOptions options;
 
-        public DocumentConverter() : this(DocumentToHtmlOptions._DEFAULT) {
-        }
+		public DocumentConverter()
+			: this(DocumentToHtmlOptions.DEFAULT)
+		{
+		}
 
-        private DocumentConverter(DocumentToHtmlOptions options) {
-            this.options = options;
-        }
+		private DocumentConverter(DocumentToHtmlOptions options)
+		{
+			this.options = options;
+		}
 
-        public DocumentConverter IdPrefix(string idPrefix) {
-            return new DocumentConverter(options.idPrefix(idPrefix));
-        }
+		/// <summary>
+		/// A string to prepend to any generated IDs,
+		/// such as those used by bookmarks, footnotes and endnotes.
+		/// Defaults to the empty string.
+		/// </summary>
+		/// <param name="idPrefix"></param>
+		public DocumentConverter IdPrefix(string idPrefix)
+		{
+			if (idPrefix == null) throw new ArgumentNullException(nameof(idPrefix));
+			return new DocumentConverter(options.AddIdPrefix(idPrefix));
+		}
 
-        public DocumentConverter PreserveEmptyParagraphs() {
-            return new DocumentConverter(options.preserveEmptyParagraphs());
-        }
+		/// <summary>
+		/// By default, empty paragraphs are ignored.
+		/// Call this to preserve empty paragraphs in the output.
+		/// </summary>
+		public DocumentConverter PreserveEmptyParagraphs()
+		{
+			return new DocumentConverter(options.AddPreserveEmptyParagraphs());
+		}
 
-        public DocumentConverter AddStyleMap(string styleMap) {
-            return new DocumentConverter(options.addStyleMap(styleMap));
-        }
+		/// <summary>
+		/// Add a style map to specify the mapping of Word styles to HTML.
+		/// </summary>
+		/// <param name="styleMap"></param>
+		/// <remarks>
+		/// The most recently added style map has the greatest precedence.
+		/// </remarks>
+		public DocumentConverter AddStyleMap(string styleMap)
+		{
+			if (styleMap == null) throw new ArgumentNullException(nameof(styleMap));
+			return new DocumentConverter(options.AddStyleMap(styleMap));
+		}
 
-        public DocumentConverter DisableDefaultStyleMap() {
-            return new DocumentConverter(options.disableDefaultStyleMap());
-        }
-        
-        public DocumentConverter DisableEmbeddedStyleMap() {
-            return new DocumentConverter(options.disableEmbeddedStyleMap());
-        }
-        
-        public DocumentConverter ImageConverter(Func<IImage, IDictionary<string, string>> imageConverter) {
-            return new DocumentConverter(options.imageConverter(new ImageConverterShim(imageConverter)));
-        }
-        
-        internal class ImageConverterShim : Mammoth.Couscous.org.zwobble.mammoth.images.ImageConverter__ImgElement {
-            private readonly Func<IImage, IDictionary<string, string>> func;
-            
-            internal ImageConverterShim(Func<IImage, IDictionary<string, string>> func) {
-                this.func = func;
-            }
-            
-            public Mammoth.Couscous.java.util.Map<string, string> convert(Mammoth.Couscous.org.zwobble.mammoth.images.Image image) {
-                return ToJava.DictionaryToMap(func(new Image(image)));
-            }
-        }
-        
-        internal class Image : IImage {
-            private readonly Mammoth.Couscous.org.zwobble.mammoth.images.Image image;
-            
-            internal Image(Mammoth.Couscous.org.zwobble.mammoth.images.Image image) {
-                this.image = image;
-            }
-            
-            public string AltText { get { return image.getAltText().orElse(null); } }
-            public string ContentType { get { return image.getContentType(); } }
-            public Stream GetStream() { return image.getInputStream().Stream; }
-        }
+		/// <summary>
+		/// By default, any added style maps are combined with the default style map.
+		/// Call this to stop using the default style map altogether.
+		/// </summary>
+		public DocumentConverter DisableDefaultStyleMap()
+		{
+			return new DocumentConverter(options.AddDisableDefaultStyleMap());
+		}
 
-        public IResult<string> ConvertToHtml(Stream stream) {
-            return new InternalDocumentConverter(options)
-                .convertToHtml(ToJava.StreamToInputStream(stream))
-                .ToResult();
-        }
+		/// <summary>
+		/// By default, if the document contains an embedded style map, then it is combined with the default style map.
+		/// Call this to ignore any embedded style maps.
+		/// </summary>
+		public DocumentConverter DisableEmbeddedStyleMap()
+		{
+			return new DocumentConverter(options.AddDisableEmbeddedStyleMap());
+		}
 
-        public IResult<string> ConvertToHtml(string path) {
-            return new InternalDocumentConverter(options)
-                .convertToHtml(new Couscous.java.io.File(path))
-                .ToResult();
-        }
+		/// <summary>
+		/// By default, images are converted to <c>&lt;img&gt;</c> elements with the source included inline in the <c>src</c> attribute.
+		/// Call this to change how images are converted.
+		/// </summary>
+		/// <param name="imageConverter"></param>
+		public DocumentConverter ImageConverter(Func<IImage, IDictionary<string, string>> imageConverter)
+		{
+			if (imageConverter == null) throw new ArgumentNullException(nameof(imageConverter));
+			var convert = InternalImageConverter.ImgElement(image => imageConverter(image));
+			return new DocumentConverter(options.AddImageConverter(convert));
+		}
 
-        public IResult<string> ExtractRawText(Stream stream) {
-            return new InternalDocumentConverter(options)
-                .extractRawText(ToJava.StreamToInputStream(stream))
-                .ToResult();
-        }
+		/// <summary>
+		/// Converts <paramref name="stream"/> into an HTML string.
+		/// </summary>
+		/// <param name="stream"></param>
+		/// <returns></returns>
+		/// <remarks>
+		/// Note that using this method instead of <see cref="ConvertToHtml(string)"/>
+		/// means that relative paths to other files, such as images, cannot be resolved.
+		/// </remarks>
+		public IResult<string> ConvertToHtml(Stream stream)
+		{
+			if (stream == null) throw new ArgumentNullException(nameof(stream));
+			return new InternalDocumentConverter(options)
+				.ConvertToHtml(stream)
+				.ToResult();
+		}
 
-        public IResult<string> ExtractRawText(string path) {
-            return new InternalDocumentConverter(options)
-                .extractRawText(new Couscous.java.io.File(path))
-                .ToResult();
-        }
-    }
+		/// <summary>
+		/// Converts the file at <paramref name="path"/> into an HTML string.
+		/// </summary>
+		/// <param name="path"></param>
+		public IResult<string> ConvertToHtml(string path)
+		{
+			if (path == null) throw new ArgumentNullException(nameof(path));
+			return new InternalDocumentConverter(options)
+				.ConvertToHtml(path)
+				.ToResult();
+		}
+
+		/// <summary>
+		/// Extract the raw text of the document.
+		/// </summary>
+		/// <param name="stream"></param>
+		/// <remarks>
+		/// This will ignore all formatting in the document.
+		/// Each paragraph is followed by two newlines.
+		/// </remarks>
+		public IResult<string> ExtractRawText(Stream stream)
+		{
+			if (stream == null) throw new ArgumentNullException(nameof(stream));
+			return new InternalDocumentConverter(options)
+				.ExtractRawText(stream)
+				.ToResult();
+		}
+
+		/// <summary>
+		/// Extract the raw text of the document.
+		/// </summary>
+		/// <param name="path"></param>
+		/// <remarks>
+		/// This will ignore all formatting in the document.
+		/// Each paragraph is followed by two newlines.
+		/// </remarks>
+		public IResult<string> ExtractRawText(string path)
+		{
+			if (path == null) throw new ArgumentNullException(nameof(path));
+			return new InternalDocumentConverter(options)
+				.ExtractRawText(path)
+				.ToResult();
+		}
+	}
 }
