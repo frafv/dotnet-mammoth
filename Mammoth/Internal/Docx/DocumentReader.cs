@@ -79,7 +79,7 @@ namespace Mammoth.Internal.Docx
 			public string Styles { get; }
 		}
 
-		public static InternalResult<Document> ReadDocument(Uri path, ZipArchive zipFile)
+		public static InternalResult<Document> ReadDocument(string path, ZipArchive zipFile)
 		{
 			var partPaths = FindPartPaths(zipFile);
 

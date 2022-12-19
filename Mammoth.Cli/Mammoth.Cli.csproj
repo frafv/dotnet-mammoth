@@ -32,6 +32,11 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command.cs" />
+    <Compile Include="CommandOption.cs" />
+    <Compile Include="CommandParameter.cs" />
+    <Compile Include="ICommandOption.cs" />
+    <Compile Include="ICommandParameter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

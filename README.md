@@ -56,6 +56,44 @@ The following features are currently supported:
 
 ## Usage
 
+### CLI
+
+You can convert docx files by passing the path to the docx file and the output file.
+For instance:
+
+    Mammoth.Cli document.docx output.html
+
+If no output file is specified, output is written to stdout instead.
+
+The output is an HTML fragment, rather than a full HTML document, encoded with UTF-8.
+Since the encoding is not explicitly set in the fragment,
+opening the output file in a web browser may cause Unicode characters to be rendered incorrectly if the browser doesn't default to UTF-8.
+
+#### Images
+
+By default, images are included inline in the output HTML.
+If an output directory is specified by `--output-dir`,
+the images are written to separate files instead.
+For instance:
+
+    Mammoth.Cli document.docx --output-dir output-dir
+
+Existing files will be overwritten if present.
+
+#### Styles
+
+A custom style map can be read from a file using `--style-map`.
+For instance:
+
+    Mammoth.Cli document.docx output.html --style-map custom-style-map.txt
+
+Where `custom-style-map.txt` looks something like:
+
+    p[style-name='Aside Heading'] => div.aside > h2:fresh
+    p[style-name='Aside Text'] => div.aside > p:fresh
+
+A description of the syntax for style maps can be found in the section ["Writing style maps"](#writing-style-maps).
+
 ### Library
 
 #### Basic conversion

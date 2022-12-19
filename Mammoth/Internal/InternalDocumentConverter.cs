@@ -19,14 +19,14 @@ namespace Mammoth.Internal
 		}
 		public InternalResult<string> ConvertToHtml(Stream stream)
 		{
-			var path = stream is FileStream fs ? new Uri(fs.Name) : null;
+			string path = stream is FileStream fs ? fs.Name : null;
 			return WithDocxFile(stream, zipFile => ConvertToHtml(path, zipFile));
 		}
 		public InternalResult<string> ConvertToHtml(string file)
 		{
-			return WithDocxFile(file, zipFile => ConvertToHtml(new Uri(file), zipFile));
+			return WithDocxFile(file, zipFile => ConvertToHtml(file, zipFile));
 		}
-		InternalResult<string> ConvertToHtml(Uri path, ZipArchive zipFile)
+		InternalResult<string> ConvertToHtml(string path, ZipArchive zipFile)
 		{
 			var styleMap = ReadEmbeddedStyleMap(zipFile) is string map ? StyleMapParser.Parse(map) : null;
 			var conversionOptions = styleMap != null ? options.AddEmbeddedStyleMap(styleMap) : options;
@@ -43,16 +43,16 @@ namespace Mammoth.Internal
 		}
 		public InternalResult<string> ExtractRawText(Stream stream)
 		{
-			var path = stream is FileStream fs ? new Uri(fs.Name) : null;
+			string path = stream is FileStream fs ? fs.Name : null;
 			return WithDocxFile(stream, zipFile =>
 				ExtractRawText(path, zipFile));
 		}
 		public InternalResult<string> ExtractRawText(string file)
 		{
 			return WithDocxFile(file, zipFile =>
-				ExtractRawText(new Uri(file), zipFile));
+				ExtractRawText(file, zipFile));
 		}
-		InternalResult<string> ExtractRawText(Uri path, ZipArchive zipFile)
+		InternalResult<string> ExtractRawText(string path, ZipArchive zipFile)
 		{
 			return DocumentReader.ReadDocument(path, zipFile)
 				.Map(document => RawText.ExtractRawText(document));

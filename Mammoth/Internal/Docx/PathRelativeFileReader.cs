@@ -5,8 +5,8 @@ namespace Mammoth.Internal.Docx
 {
 	internal class PathRelativeFileReader : IFileReader
 	{
-		readonly Uri path;
-		internal PathRelativeFileReader(Uri path = null)
+		readonly string path;
+		internal PathRelativeFileReader(string path = null)
 		{
 			this.path = path;
 		}
@@ -40,15 +40,15 @@ namespace Mammoth.Internal.Docx
 		{
 			return Uri.TryCreate(uriString, UriKind.Absolute, out _);
 		}
-		static string Resolve(Uri path, string uri)
+		static string Resolve(string path, string uri)
 		{
 			if (IsAbsoluteUri(uri))
 			{
 				return uri;
 			}
-			else if (path.IsAbsoluteUri)
+			else if (IsAbsoluteUri(path))
 			{
-				return new Uri(path, uri).AbsolutePath;
+				return new Uri(new Uri(path, UriKind.Absolute), uri).AbsolutePath;
 			}
 			else
 			{
